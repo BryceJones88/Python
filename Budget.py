@@ -3,39 +3,37 @@ import csv
 
 budget_data_csv = os.path.join('PyBank_Work', 'Budget_Data.csv')
 
-month = 0
-months = {}
-total = 0
-profit = 0
-sum_profit = 0
-sum_loss = 0
-profitlosstotal = 0
-
-print('Financial Analysis')
-print('--------------------------')
-
+total_months = 0
+total_profit = 0
+value = 0
+change = 0
+months = []
+profits = []
 with open(budget_data_csv, 'r') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=',')
+    csv_header = next(csvreader)
+    first_row = next(csvreader)
+    total_months = 1
+    total_profit = int(first_row[1])
+    value = int(first_row[1])
     for row in csvreader:
-
-        month = row[0]
-        total = total + 1
-        
-    if month in months:
-            months[month] = months[month] + 1
-    else:
-        months[month] = 1
-
-    for row in csvreader:
-        profit = int(row[1])
-    if profit > 0:
-        sum_profit = sum_loss + profit
-    elif profit < 0:
-        sum_loss = sum_loss + profit
-    profitlosstotal = sum_profit - sum_loss
-   
-
-
-print('Total Months' + ':' + str(total - 1))
-print(f"Profit/Loss : {profitlosstotal}")
-
+        months.append(row[0])
+        change = int(row[1])-value
+        profits.append(change)
+        value = int(row[1])
+        total_months = total_months + 1
+        total_profit = total_profit + value
+    greatest_inc = max(profits)
+    increase_index = profits.index(greatest_inc)
+    best_date = months[increase_index]
+    greatest_dec = min(profits)
+    decrease_index = profits.index(greatest_dec)
+    worst_date = months[decrease_index]
+    avg_date = sum(profits)/len(profits)
+    print("Financial Analysis")
+    print("---------------------")
+    print("Total Months: " + str(total_months))
+    print("Total: " + "$" + str(total_profit))
+    print("Average Change: " +  "$" + str(round(avg_date,2)))
+    print("Greatest Increase: " + (best_date) +" " + "$" + str(greatest_inc))
+    print("Greatest Decrease: " + (worst_date) + " " + "$" + str(greatest_dec))
